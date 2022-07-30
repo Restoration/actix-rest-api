@@ -1,4 +1,3 @@
-
 use actix_web::{http::StatusCode, HttpResponse};
 use failure::Fail;
 
