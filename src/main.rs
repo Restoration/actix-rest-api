@@ -1,21 +1,22 @@
-use actix_web::{web, App, HttpResponse, HttpServer, Responder};
-
-async fn index() -> impl Responder {
-    HttpResponse::Ok()
-        .content_type("application/json")
-        .json("{\"message\":\"Hello World!!\"}")
-}
-
-async fn health_check() -> impl Responder {
-    HttpResponse::Ok()
-}
+mod domain;
+mod repository;
+mod port;
+mod presenter;
+mod usecase;
+mod router;
+mod container;
+use actix_web::middleware::Logger;
+use actix_web::{App, HttpServer};
 
 #[actix_rt::main]
-async fn main() -> std::io::Result<()> {
+pub async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
-            .route("/", web::get().to(index))
-            .route("/hc", web::get().to(health_check))
+            .data(Container {
+                user_port: UserRepository {},
+            })
+            .wrap(Logger::default())
+            .configure(routes)
     })
     .bind("127.0.0.1:8080")?
     .run()
