@@ -1,10 +1,10 @@
-use crate::container::Container;
+use crate::container::container::Container;
 use crate::domain::user::User;
-use crate::usecase::user_usecase;
+use crate::usecase::user_usecase::UserUsecase;
 use actix_web::{web, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
 
-pub async fn user(data: web::Data<Container>) -> impl Responder {
+pub async fn User(data: web::Data<Container>) -> impl Responder {
     let user = user_usecase::execute(data.user_port).await;
 
     match user {
