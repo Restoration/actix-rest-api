@@ -16,6 +16,7 @@ use sea_orm::{Database, DatabaseConnection};
 #[actix_rt::main]
 pub async fn main() -> std::io::Result<()> {
     let db: DatabaseConnection = Database::connect("protocol://username:password@host/database").await?;
+
     HttpServer::new(|| {
         App::new()
             .data(Container {

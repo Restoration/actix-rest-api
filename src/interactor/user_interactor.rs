@@ -1,6 +1,6 @@
+use async_trait::async_trait;
 use sea_orm::DatabaseConnection;
-
-use crate::domain::user::Users;
+use crate::domain::user::{User, Users, UserId};
 use crate::domain::error::Error;
 use crate::port::user_port::UserPort;
 
@@ -10,7 +10,9 @@ pub struct UserUseCase {
     db: DatabaseConnection,
     user_port: dyn UserPort,
 }
+pub struct UserInteractor;
 
+#[async_trait(?Send)]
 impl UserInteractor for UserUseCase {
     async fn find_user(id: UserId) -> Result<User, Error> {
         return user_port.find_user(db, id).await?
