@@ -18,3 +18,4 @@ async-trait = "0.1.22"
 awc = "1.0.1"
 sea-orm = { version = "0.9.3", features = ["sqlx-mysql", "runtime-async-std-rustls", "macros" ] }
 async-std = { version = "1", features = ["attributes"] }
+envy = "0.4"
