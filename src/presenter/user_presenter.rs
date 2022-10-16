@@ -1,11 +1,11 @@
 use crate::container::container::Container;
-use crate::domain::user::User;
-use crate::usecase::user_usecase::UserUsecase;
+use crate::domain::user::{User, UserId};
+use crate::interactor::user_interactor::UserInteractor;
 use actix_web::{web, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
 
 pub async fn User(data: web::Data<Container>) -> impl Responder {
-    let user = user_usecase::execute(data.user_port).await;
+    let user = UserInteractor::find_user(data.user_port).await;
 
     match user {
         Ok(user) => HttpResponse::Ok().json(
@@ -19,7 +19,7 @@ pub async fn User(data: web::Data<Container>) -> impl Responder {
 
 #[derive(Serialize, Deserialize, Debug)]
 struct UserResponse {
-    id: u32,
+    id: UserId,
     name: String,
 }
 
