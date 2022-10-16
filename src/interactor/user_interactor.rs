@@ -5,19 +5,27 @@ use crate::domain::error::Error;
 use crate::port::user_port::UserPort;
 
 
-#[derive(Debug, Copy, Clone)]
-pub struct UserUseCase {
-    db: DatabaseConnection,
-    user_port: dyn UserPort,
+// pub struct UserUseCase {
+//     db: DatabaseConnection,
+//     user_port: dyn UserPort,
+// }
+
+
+#[async_trait(?Send)]
+pub trait UserUseCase {
+    async fn find_user(db: DatabaseConnection, id: UserId) -> Result<User, Error>;
+    async fn find_users(db: DatabaseConnection,) -> Result<Users, Error>;
 }
+
+#[derive(Debug, Copy, Clone)]
 pub struct UserInteractor;
 
 #[async_trait(?Send)]
-impl UserInteractor for UserUseCase {
+impl UserInteractor for dyn UserUseCase {
     async fn find_user(id: UserId) -> Result<User, Error> {
-        return user_port.find_user(db, id).await?
+        return Self::user_port.find_user(Self::db, id).await?
     }
     async fn find_users() -> Result<Users, Error> {
-        return user_port.find_users(db).await?
+        return Self::user_port.find_users(Self::db).await?
     }
 }
