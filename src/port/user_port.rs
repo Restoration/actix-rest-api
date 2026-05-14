@@ -1,5 +1,4 @@
-use crate::domain::error::AppError;
-use crate::domain::user::{User, Users, UserId};
+use crate::domain::{AppError, User, Users, UserId};
 use async_trait::async_trait;
 
 #[async_trait]

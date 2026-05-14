@@ -1,5 +1,5 @@
-use crate::container::container::Container;
-use crate::domain::user::{User, UserId};
+use crate::container::Container;
+use crate::domain::{User, UserId};
 use actix_web::{web, HttpResponse, Responder, ResponseError};
 use serde::{Deserialize, Serialize};
 

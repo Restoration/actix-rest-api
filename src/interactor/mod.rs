@@ -1,1 +1,2 @@
-pub mod user_interactor;
+mod user_interactor;
+pub use user_interactor::{UserInteractor, UserUseCase};

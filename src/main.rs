@@ -9,11 +9,11 @@ mod repository;
 mod router;
 
 use std::sync::Arc;
-use crate::config::config::Config;
-use crate::container::container::Container;
-use crate::interactor::user_interactor::UserInteractor;
-use crate::repository::user_repository::UserRepository;
-use crate::router::router::routes;
+use crate::config::Config;
+use crate::container::Container;
+use crate::interactor::UserInteractor;
+use crate::repository::UserRepository;
+use crate::router::routes;
 use actix_web::middleware::Logger;
 use actix_web::{web, App, HttpServer};
 use sea_orm::Database;
@@ -24,6 +24,8 @@ async fn main() -> std::io::Result<()> {
 
     let config = envy::from_env::<Config>().expect("Failed to load config from env");
     println!("{:#?}", config);
+
+    let port = config.port;
 
     let db = Database::connect(&config.database_url)
         .await
@@ -44,7 +46,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(Logger::default())
             .configure(routes)
     })
-    .bind(("127.0.0.1", config.port))?
+    .bind(("127.0.0.1", port))?
     .run()
     .await
 }

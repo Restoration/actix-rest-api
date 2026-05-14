@@ -2,9 +2,8 @@ use async_trait::async_trait;
 use log::error;
 use sea_orm::{DatabaseConnection, EntityTrait};
 use crate::dao::user::Entity as UserEntity;
-use crate::domain::user::{User, Users, UserId};
-use crate::domain::error::AppError;
-use crate::port::user_port::UserPort;
+use crate::domain::{AppError, User, Users, UserId};
+use crate::port::UserPort;
 
 #[derive(Debug, Clone)]
 pub struct UserRepository {

@@ -1,8 +1,6 @@
 #[derive(Debug, Clone, Copy)]
 pub struct UserId(pub u32);
 
-pub type UserIds = Vec<UserId>;
-
 #[derive(Debug, Clone)]
 pub struct User {
     pub id: UserId,

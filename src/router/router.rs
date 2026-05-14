@@ -1,6 +1,4 @@
-use crate::presenter::health_check_presenter::health_check;
-use crate::presenter::user_presenter::{get_user, get_users};
-
+use crate::presenter::{health_check, get_user, get_users};
 use actix_web::web;
 
 pub fn routes(app: &mut web::ServiceConfig) {
