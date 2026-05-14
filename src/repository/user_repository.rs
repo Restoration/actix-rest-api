@@ -1,4 +1,5 @@
 use async_trait::async_trait;
+use log::error;
 use sea_orm::{DatabaseConnection, EntityTrait};
 use crate::dao::user::Entity as UserEntity;
 use crate::domain::user::{User, Users, UserId};
@@ -16,7 +17,10 @@ impl UserPort for UserRepository {
         let model = UserEntity::find_by_id(id.0)
             .one(&self.db)
             .await
-            .map_err(|_| AppError::InternalServerError)?
+            .map_err(|e| {
+                error!("Failed to find user by id {}: {}", id.0, e);
+                AppError::InternalServerError
+            })?
             .ok_or(AppError::NotFound)?;
         Ok(User::new(UserId(model.id), model.name))
     }
@@ -25,7 +29,10 @@ impl UserPort for UserRepository {
         let models = UserEntity::find()
             .all(&self.db)
             .await
-            .map_err(|_| AppError::InternalServerError)?;
+            .map_err(|e| {
+                error!("Failed to find users: {}", e);
+                AppError::InternalServerError
+            })?;
         Ok(models
             .into_iter()
             .map(|m| User::new(UserId(m.id), m.name))

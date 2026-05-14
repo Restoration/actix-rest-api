@@ -1,6 +1,6 @@
 use crate::container::container::Container;
 use crate::domain::user::{User, UserId};
-use actix_web::{web, HttpResponse, Responder};
+use actix_web::{web, HttpResponse, Responder, ResponseError};
 use serde::{Deserialize, Serialize};
 
 pub async fn get_user(
@@ -10,7 +10,7 @@ pub async fn get_user(
     let id = UserId(path.into_inner());
     match data.user_use_case.find_user(id).await {
         Ok(user) => HttpResponse::Ok().json(UserResponse::from(user)),
-        Err(_) => HttpResponse::InternalServerError().json(""),
+        Err(e) => e.error_response(),
     }
 }
 
@@ -22,7 +22,7 @@ pub async fn get_users(data: web::Data<Container>) -> impl Responder {
                 .map(UserResponse::from)
                 .collect::<Vec<UserResponse>>(),
         ),
-        Err(_) => HttpResponse::InternalServerError().json(""),
+        Err(e) => e.error_response(),
     }
 }
 
