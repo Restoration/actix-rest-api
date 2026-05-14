@@ -1,6 +1,5 @@
-use crate::container::container::Container;
-use actix_web::{web, HttpResponse, Responder};
+use actix_web::{HttpResponse, Responder};
 
-pub async fn HealthCheck(data: web::Data<Container>) -> impl Responder {
+pub async fn health_check() -> impl Responder {
     HttpResponse::Ok()
 }

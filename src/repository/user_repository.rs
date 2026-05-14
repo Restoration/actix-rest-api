@@ -1,22 +1,34 @@
 use async_trait::async_trait;
-use sea_orm::{DatabaseConnection};
-use crate::domain::user::{User,  Users, UserId};
-use crate::domain::error::Error;
-use crate::dao::user::Model;
+use sea_orm::{DatabaseConnection, EntityTrait};
+use crate::dao::user::Entity as UserEntity;
+use crate::domain::user::{User, Users, UserId};
+use crate::domain::error::AppError;
 use crate::port::user_port::UserPort;
 
-#[derive(Debug, Copy, Clone)]
-pub struct UserRepository;
+#[derive(Debug, Clone)]
+pub struct UserRepository {
+    pub db: DatabaseConnection,
+}
 
-#[async_trait(?Send)]
+#[async_trait]
 impl UserPort for UserRepository {
-    async fn find_user(db: DatabaseConnection, id: UserId) -> Result<User, Error> {
-        let user: Option<Model> = User::find_by_id(id).one(db).await?;
-        let user: Model = user.unwrap();
-        return user
+    async fn find_user(&self, id: UserId) -> Result<User, AppError> {
+        let model = UserEntity::find_by_id(id.0)
+            .one(&self.db)
+            .await
+            .map_err(|_| AppError::InternalServerError)?
+            .ok_or(AppError::NotFound)?;
+        Ok(User::new(UserId(model.id), model.name))
     }
-    async fn find_users(db: DatabaseConnection) -> Result<Users, Error> {
-        let users: Vec<Model> = Users::find().all(db).await?;
-        return users
+
+    async fn find_users(&self) -> Result<Users, AppError> {
+        let models = UserEntity::find()
+            .all(&self.db)
+            .await
+            .map_err(|_| AppError::InternalServerError)?;
+        Ok(models
+            .into_iter()
+            .map(|m| User::new(UserId(m.id), m.name))
+            .collect())
     }
 }

@@ -1,6 +1,6 @@
-use crate::repository::user_repository::UserRepository;
+use std::sync::Arc;
+use crate::interactor::user_interactor::UserUseCase;
 
-#[derive(Debug, Clone, Copy)]
 pub struct Container {
-    user_port: UserRepository,
+    pub user_use_case: Arc<dyn UserUseCase>,
 }

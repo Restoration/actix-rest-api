@@ -1,31 +1,25 @@
 use async_trait::async_trait;
-use sea_orm::DatabaseConnection;
 use crate::domain::user::{User, Users, UserId};
-use crate::domain::error::Error;
+use crate::domain::error::AppError;
 use crate::port::user_port::UserPort;
 
-
-// pub struct UserUseCase {
-//     db: DatabaseConnection,
-//     user_port: dyn UserPort,
-// }
-
-
-#[async_trait(?Send)]
-pub trait UserUseCase {
-    async fn find_user(db: DatabaseConnection, id: UserId) -> Result<User, Error>;
-    async fn find_users(db: DatabaseConnection,) -> Result<Users, Error>;
+#[async_trait]
+pub trait UserUseCase: Send + Sync {
+    async fn find_user(&self, id: UserId) -> Result<User, AppError>;
+    async fn find_users(&self) -> Result<Users, AppError>;
 }
 
-#[derive(Debug, Copy, Clone)]
-pub struct UserInteractor;
+pub struct UserInteractor<P: UserPort> {
+    pub user_port: P,
+}
 
-#[async_trait(?Send)]
-impl UserInteractor for dyn UserUseCase {
-    async fn find_user(id: UserId) -> Result<User, Error> {
-        return Self::user_port.find_user(Self::db, id).await?
+#[async_trait]
+impl<P: UserPort> UserUseCase for UserInteractor<P> {
+    async fn find_user(&self, id: UserId) -> Result<User, AppError> {
+        self.user_port.find_user(id).await
     }
-    async fn find_users() -> Result<Users, Error> {
-        return Self::user_port.find_users(Self::db).await?
+
+    async fn find_users(&self) -> Result<Users, AppError> {
+        self.user_port.find_users().await
     }
 }

@@ -1,10 +1,18 @@
-// use actix_web::{http::StatusCode, HttpResponse};
-use failure::Fail;
+use thiserror::Error;
 
-#[derive(Fail, Debug)]
-pub enum Error {
-    #[fail(display = "An internal error occurred. Please try again later.")]
+#[derive(Error, Debug)]
+pub enum AppError {
+    #[error("An internal error occurred. Please try again later.")]
     InternalServerError,
-    #[fail(display = "Not Found")]
+    #[error("Not Found")]
     NotFound,
+}
+
+impl actix_web::ResponseError for AppError {
+    fn status_code(&self) -> actix_web::http::StatusCode {
+        match self {
+            AppError::InternalServerError => actix_web::http::StatusCode::INTERNAL_SERVER_ERROR,
+            AppError::NotFound => actix_web::http::StatusCode::NOT_FOUND,
+        }
+    }
 }
