@@ -7,7 +7,13 @@ use crate::port::UserPort;
 
 #[derive(Debug, Clone)]
 pub struct UserRepository {
-    pub db: DatabaseConnection,
+    db: DatabaseConnection,
+}
+
+impl UserRepository {
+    pub fn new(db: DatabaseConnection) -> Self {
+        Self { db }
+    }
 }
 
 #[async_trait]

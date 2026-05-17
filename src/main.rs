@@ -23,7 +23,7 @@ async fn main() -> std::io::Result<()> {
     env_logger::init();
 
     let config = envy::from_env::<Config>().expect("Failed to load config from env");
-    println!("{:#?}", config);
+    log::info!("Server starting on port {}", config.port);
 
     let port = config.port;
 
@@ -31,10 +31,8 @@ async fn main() -> std::io::Result<()> {
         .await
         .expect("Failed to connect to database");
 
-    let user_repository = UserRepository { db };
-    let user_interactor = UserInteractor {
-        user_port: user_repository,
-    };
+    let user_repository = UserRepository::new(db);
+    let user_interactor = UserInteractor::new(user_repository);
 
     let container = web::Data::new(Container {
         user_use_case: Arc::new(user_interactor),

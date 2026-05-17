@@ -61,10 +61,7 @@ mod tests {
     impl UserUseCase for MockUseCase {
         async fn find_user(&self, id: UserId) -> Result<User, AppError> {
             if let Some(ref err) = self.find_user_error {
-                return Err(match err {
-                    AppError::NotFound => AppError::NotFound,
-                    AppError::InternalServerError => AppError::InternalServerError,
-                });
+                return Err(err.clone());
             }
             self.users
                 .iter()
@@ -75,10 +72,7 @@ mod tests {
 
         async fn find_users(&self) -> Result<Users, AppError> {
             if let Some(ref err) = self.find_users_error {
-                return Err(match err {
-                    AppError::NotFound => AppError::NotFound,
-                    AppError::InternalServerError => AppError::InternalServerError,
-                });
+                return Err(err.clone());
             }
             Ok(self.users.clone())
         }
