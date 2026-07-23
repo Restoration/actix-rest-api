@@ -64,6 +64,7 @@ presenter → interactor(trait) → port(trait) ← repository
 | actix-web 4 | Web フレームワーク |
 | sea-orm 0.12 | ORM (MySQL, sqlx-mysql) |
 | envy | 環境変数 → Config struct |
+| dotenvy | `.env` ファイルの読み込み (main 冒頭で `dotenvy::dotenv().ok()`) |
 | thiserror | エラー型定義 |
 | async-trait | async fn in trait |
 | serde | JSON シリアライズ/デシリアライズ |
@@ -101,6 +102,9 @@ presenter → interactor(trait) → port(trait) ← repository
 ## コマンド
 
 ```sh
+# 初回セットアップ (.env を作成し、DATABASE_URL を環境に合わせて編集)
+cp .env.example .env
+
 # ビルド
 cargo build
 
