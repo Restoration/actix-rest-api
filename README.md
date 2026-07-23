@@ -23,6 +23,7 @@ src/
 - [actix-web](https://actix.rs/) 4 — Web フレームワーク
 - [SeaORM](https://www.sea-ql.org/SeaORM/) 0.12 — ORM (MySQL)
 - [envy](https://github.com/softprops/envy) — 環境変数パーサ
+- [dotenvy](https://github.com/allan2/dotenvy) — `.env` ファイル読み込み
 - [thiserror](https://github.com/dtolnay/thiserror) — エラー型定義
 
 ## Endpoints
@@ -46,7 +47,9 @@ cargo install sea-orm-cli
 
 DB 起動 → マイグレーション → API 起動:
 ```sh
-cp dotenv .env
+# .env を作成し、DATABASE_URL を環境に合わせて編集
+cp .env.example .env
+
 docker-compose up -d
 
 sea-orm-cli migrate up
